@@ -16,6 +16,7 @@
 start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+
 process(Op) ->
   case Op of
     <<"inc">> -> list_to_binary(integer_to_list(inc()));
@@ -33,28 +34,36 @@ dec() ->
 stat() ->
   gen_server:call(?SERVER, stat).
 
+
 init([]) ->
   process_flag(trap_exit, true),
   State = 0,
   {ok, State}.
 
+
 handle_call(inc, _From, State) ->
   NewState = State + 1,
   {reply, NewState, NewState};
+
 handle_call(dec, _From, State) ->
   NewState = State - 1,
   {reply, NewState, NewState};
+
 handle_call(stat, _From, State) ->
   {reply, State, State}.
+
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
 
+
 handle_info(_Info, State) ->
   {noreply, State}.
 
+
 terminate(_Reason, _State) ->
   ok.
+
 
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
