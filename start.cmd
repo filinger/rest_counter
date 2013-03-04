@@ -1,0 +1,1 @@
+erl -pa ebin deps/ranch/ebin deps/cowboy/ebin -s rest_counter

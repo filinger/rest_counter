@@ -23,7 +23,13 @@ handle_http([], Req) ->
   cowboy_req:reply(200, [], <<"Hello world! :3">>, Req);
 
 handle_http([Op], Req) ->
-  Result = gen_counter:process(Op),
+  ToBinary = fun(Count) -> list_to_binary(integer_to_list(Count)) end,
+  Result = case Op of
+    <<"inc">> -> ToBinary(gen_counter:inc());
+    <<"dec">> -> ToBinary(gen_counter:dec());
+    <<"stat">> -> ToBinary(gen_counter:stat());
+    _ -> <<"Available commands: /inc, /dec, /stat">>
+  end,
   cowboy_req:reply(200, [], Result, Req);
 
 handle_http([Id, Op], Req) ->
