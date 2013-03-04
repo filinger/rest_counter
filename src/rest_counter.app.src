@@ -1,0 +1,13 @@
+{application, rest_counter, [
+	{description, "REST Counter."},
+	{vsn, "1"},
+	{modules, []},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib,
+		cowboy
+	]},
+	{mod, {rest_counter_app, []}},
+	{env, []}
+]}.
