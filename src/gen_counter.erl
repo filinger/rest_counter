@@ -6,9 +6,6 @@
 
 %% API
 -export([start_link/0, process/1]).
-%%  inc/0,
-%%  dec/0,
-%%  stat/0]).
 
 %% gen_server
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -20,16 +17,35 @@ start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 process(Op) ->
-  gen_server:call(?SERVER, Op).
+  case Op of
+    <<"inc">> -> list_to_binary(integer_to_list(inc()));
+    <<"dec">> -> list_to_binary(integer_to_list(dec()));
+    <<"stat">> -> list_to_binary(integer_to_list(stat()));
+    _ -> <<"Available commands: /inc, /dec, /stat">>
+  end.
+
+inc() ->
+  gen_server:call(?SERVER, inc).
+
+dec() ->
+  gen_server:call(?SERVER, dec).
+
+stat() ->
+  gen_server:call(?SERVER, stat).
 
 init([]) ->
   process_flag(trap_exit, true),
   State = 0,
   {ok, State}.
 
-handle_call(_Op, _From, State) ->
+handle_call(inc, _From, State) ->
   NewState = State + 1,
-  {reply, NewState}.
+  {reply, NewState, NewState};
+handle_call(dec, _From, State) ->
+  NewState = State - 1,
+  {reply, NewState, NewState};
+handle_call(stat, _From, State) ->
+  {reply, State, State}.
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
