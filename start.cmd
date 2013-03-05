@@ -1,1 +1,1 @@
-erl -pa ebin deps/ranch/ebin deps/cowboy/ebin -s rest_counter
+erl -pa ebin deps/ranch/ebin deps/cowboy/ebin -s rest_counter -eval "io:format(\"Point your browser at http://localhost:9080~n\")."
