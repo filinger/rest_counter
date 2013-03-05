@@ -16,13 +16,13 @@ start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 inc() ->
-  gen_server:call(?MODULE, inc).
+  gen_server:call(?MODULE, fun(Count) -> Count + 1 end).
 
 dec() ->
-  gen_server:call(?MODULE, dec).
+  gen_server:call(?MODULE, fun(Count) -> Count - 1 end).
 
 stat() ->
-  gen_server:call(?MODULE, stat).
+  gen_server:call(?MODULE, fun(Count) -> Count end).
 
 %% gen_server callbacks
 -record(state, {counter = 0}).
@@ -31,14 +31,9 @@ init(_Args) ->
   process_flag(trap_exit, true),
   {ok, #state{}}.
 
-handle_call(inc, _From, State) ->
-  NewState = State#state{counter = State#state.counter + 1},
-  {reply, NewState#state.counter, NewState};
-handle_call(dec, _From, State) ->
-  NewState = State#state{counter = State#state.counter -1},
-  {reply, NewState#state.counter, NewState};
-handle_call(stat, _From, State) ->
-  {reply, State#state.counter, State}.
+handle_call(OpFunction, _From, State) ->
+  NewState = State#state{counter = OpFunction(State#state.counter)},
+  {reply, NewState#state.counter, NewState}.
 
 handle_cast(_Request, State) ->
   {noreply, State}.
