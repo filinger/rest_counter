@@ -31,8 +31,8 @@ init(_Args) ->
   process_flag(trap_exit, true),
   {ok, #state{}}.
 
-handle_call(OpFunction, _From, State) ->
-  NewState = State#state{counter = OpFunction(State#state.counter)},
+handle_call(OpFun, _From, State) ->
+  NewState = State#state{counter = OpFun(State#state.counter)},
   {reply, NewState#state.counter, NewState}.
 
 handle_cast(_Request, State) ->
